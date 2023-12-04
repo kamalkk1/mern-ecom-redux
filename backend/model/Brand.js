@@ -1,9 +1,21 @@
-const express = require('express');
-const { fetchUserById, updateUser } = require('../controller/User');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const router = express.Router();
-//  /users is already added in base path
-router.get('/own', fetchUserById)
-      .patch('/:id', updateUser)
+const brandSchema = new Schema({
+  label: { type: String, required: true, unique: true },
+  value: { type: String, required: true, unique: true },
+});
 
-exports.router = router;
+const virtual = brandSchema.virtual('id');
+virtual.get(function () {
+  return this._id;
+});
+brandSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id;
+  },
+});
+
+exports.Brand = mongoose.model('Brand', brandSchema);

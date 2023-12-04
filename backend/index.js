@@ -109,11 +109,12 @@ server.get('*', (req, res) =>
 // Passport Strategies
 passport.use(
     'local',
+    {usernameFeild:'email'},
     new LocalStrategy(async function (email, password, done) {
       // by default passport uses username
       try {
         const user = await User.findOne({ email: email });
-        console.log(email, password, user);
+        // console.log(email, password, user);
         if (!user) {
           return done(null, false, { message: 'invalid credentials' }); // for safety
         }
